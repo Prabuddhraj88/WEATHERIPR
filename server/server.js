@@ -8,7 +8,11 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 const data = require("./db/food_data.json").data;
 
-const port = 3000; // You can change this port as needed
+const port = 3000;
+
+app.get('/', (req, res) => {
+    res.status(200).send("1");
+});
 
 app.get('/data', (req, res) => {
     const { age, code, diet } = req.query;
