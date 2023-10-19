@@ -51,7 +51,7 @@ async function fetchResults(targetLocation) {
     let diet_type = document.querySelector("input[type='radio'][name='diet-type']:checked").value;
     let age = document.getElementById("age").value;
     if (age.length < 1) age = 10;
-    let suggestor_api_url = `http://localhost:3000/data?age=${age}&code=${weather_code}&diet=${diet_type}`;
+    let suggestor_api_url = `https://weatheripr.prabuddhraj88.repl.co/data?age=${age}&code=${weather_code}&diet=${diet_type}`;
     res = await fetch(suggestor_api_url)
     data = await res.json()
 
@@ -76,7 +76,20 @@ function updateDetails(temp, locationName, time, condition, weather_logo) {
     icon.setAttribute("src", weather_logo);
     icon.setAttribute("alt", condition);
     weatherField.innerText = condition;
-    document.getElementsByClassName("container")[0].style["background-image"] = `url('https://source.unsplash.com/random?topic=${condition}')`;
+    const apiUrl = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(condition)}&client_id=${UNSPLASH_API_KEY}`;
+    fetch(apiUrl)
+        .then((response) => response.json())
+        .then((data) => {
+            const images = data.results;
+            if (images.length > 0) {
+                const randomIndex = Math.floor(Math.random() * images.length);
+                const imageUrl = images[randomIndex].urls.regular;
+                document.getElementsByClassName("container")[0].style["background-image"] = `url(${imageUrl})`;
+            } else {
+                console.error("No images found for the meal name.");
+            }
+        })
+        .catch((error) => console.error(error));
 }
 
 function searchForLocation(e) {
